@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "start": "node src/index.ts",
+    "lint": "eslint --ext src/**/*.ts --fix",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "repository": {
     "type": "git",
@@ -16,5 +21,18 @@
   "bugs": {
     "url": "https://github.com/afgonullu/GoodXPBot/issues"
   },
-  "homepage": "https://github.com/afgonullu/GoodXPBot#readme"
+  "homepage": "https://github.com/afgonullu/GoodXPBot#readme",
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "@typescript-eslint/parser": "^4.29.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
+  }
 }
