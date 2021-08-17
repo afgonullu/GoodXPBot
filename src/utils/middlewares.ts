@@ -11,4 +11,8 @@ const errorHandler = (error: Error, _request: Request, response: Response, next:
   next(error);
 };
 
-export default { errorHandler };
+const unknownEndpoint = (_request: Request, response: Response): void => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+export default { errorHandler, unknownEndpoint };

@@ -20,6 +20,7 @@ app.get('/ping', (_req, res) => {
   res.send('pong');
 });
 
+app.use(middlewares.unknownEndpoint);
 app.use(middlewares.errorHandler);
 
 app.listen(config.PORT, () => {
