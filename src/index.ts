@@ -7,6 +7,7 @@ import config from './config/config';
 import middlewares from './utils/middlewares';
 
 require('express-async-errors');
+require('./db/mongo');
 
 const app = express();
 
