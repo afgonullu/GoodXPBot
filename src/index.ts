@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 import config from './config/config';
 import middlewares from './utils/middlewares';
+import notesRouter from './routes/notes';
 
 require('express-async-errors');
 require('./db/mongo');
@@ -20,6 +21,8 @@ app.get('/ping', (_req, res) => {
   console.log('someone pinged here');
   res.send('pong');
 });
+
+app.use('/api/notes', notesRouter);
 
 app.use(middlewares.unknownEndpoint);
 app.use(middlewares.errorHandler);
