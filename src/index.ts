@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import config from './config/config';
 import middlewares from './utils/middlewares';
-import notesRouter from './routes/notes';
+import twitchAuthRouter from './routes/twitchAuth';
 
 require('express-async-errors');
 require('./db/mongo');
@@ -22,7 +22,7 @@ app.get('/ping', (_req, res) => {
   res.send('pong');
 });
 
-app.use('/api/notes', notesRouter);
+app.use('/auth/twitch', twitchAuthRouter);
 
 app.use(middlewares.unknownEndpoint);
 app.use(middlewares.errorHandler);
