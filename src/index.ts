@@ -6,9 +6,11 @@ import morgan from 'morgan';
 import config from './config/config';
 import middlewares from './utils/middlewares';
 import twitchAuthRouter from './routes/twitchAuth';
+import globalCommandRouter from './routes/globalCommand';
 
 require('express-async-errors');
 require('./db/mongo');
+require('./bot/bot');
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.get('/ping', (_req, res) => {
 });
 
 app.use('/auth/twitch', twitchAuthRouter);
+app.use('/globalCommands', globalCommandRouter);
 
 app.use(middlewares.unknownEndpoint);
 app.use(middlewares.errorHandler);
