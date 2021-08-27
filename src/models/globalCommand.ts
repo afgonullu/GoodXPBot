@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GlobalCommand } from '../interfaces/globalCommand';
+import { GlobalCommand } from '../interfaces';
 
 const globalCommandSchema = new mongoose.Schema<GlobalCommand>({
   name: { type: String, required: true },

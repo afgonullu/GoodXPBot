@@ -19,7 +19,10 @@
       {
         "checksVoidReturn": false
       }
-    ]
+    ],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["off"],
+    "@typescript-eslint/restrict-template-expressions": "off"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

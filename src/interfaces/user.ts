@@ -5,4 +5,7 @@ export interface User {
   twitchProfileImageUrl: string;
   refreshToken: string;
   scope: string;
+  botName?: string;
+  botOAuth?: string;
+  botRefreshToken?: string;
 }

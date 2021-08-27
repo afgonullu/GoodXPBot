@@ -1,16 +1,15 @@
 import express, { Request, Response } from 'express';
 import { URLSearchParams } from 'url';
-import config from '../config/config';
-import { ITokenResponse } from '../interfaces/twitchAuth';
-import { IUserResponse } from '../interfaces/twitchHelix';
-import twitchAuthApi, { twitchAuthBaseUrl } from '../lib/twitchAuthApi';
-import twitchHelixApi from '../lib/twitchHelixApi';
-import UserModel from '../models/user';
+import config from '../config';
+import { createUser, getUser, getUserToken } from '../services/twitchAuthService';
+import { twitchAuthBaseUrl } from '../lib';
+import { twitchScopes } from '../utils';
+import { UserModel } from '../models';
 
 const twitchAuthRouter = express.Router();
 
 twitchAuthRouter.get('/', (req: Request, res: Response) => {
-  const scope = req.query.scope as string;
+  const scope = (req.query.scope as string) || twitchScopes.essentialScopes;
 
   const qs = new URLSearchParams({
     client_id: config.TWITCH_APP_CLIENT_ID,
@@ -25,36 +24,21 @@ twitchAuthRouter.get('/', (req: Request, res: Response) => {
 twitchAuthRouter.get('/callback', async (req: Request, res: Response) => {
   const code = req.query.code as string;
 
-  const qs = new URLSearchParams({
-    client_id: config.TWITCH_APP_CLIENT_ID,
-    client_secret: config.TWITCH_APP_CLIENT_SECRET,
-    code,
-    grant_type: 'authorization_code',
-    redirect_uri: config.TWITCH_APP_REDIRECT_URI,
-  });
+  if (!code) throw new Error('No code for token generation');
 
-  const { data: tokenResponse } = await twitchAuthApi.post<ITokenResponse>(`/token?${qs}`);
+  const tokenResponse = await getUserToken(code);
 
-  const {
-    data: { data: userResponse },
-  } = await twitchHelixApi.get<{ data: IUserResponse[] }>('/users', {
-    headers: {
-      Authorization: `Bearer ${tokenResponse.access_token}`,
-      'Client-Id': config.TWITCH_APP_CLIENT_ID,
-    },
-  });
+  const userResponse = await getUser(tokenResponse.access_token);
 
-  const user = new UserModel({
-    refreshToken: tokenResponse.refresh_token,
-    twitchId: userResponse[0].id,
-    twitchLogin: userResponse[0].login,
-    twitchProfileImageUrl: userResponse[0].profile_image_url,
-    scope: tokenResponse.scope.join(','),
-  });
+  const user = await UserModel.findOne({ twitchId: userResponse[0].id });
 
-  await user.save();
+  if (user) throw new Error('User already exists in db');
 
-  res.send('Ok');
+  const newUser = await createUser(tokenResponse, userResponse[0]);
+
+  if (!newUser) throw new Error("Couldn't save user to the db");
+
+  res.status(200).json(newUser);
 });
 
 export default twitchAuthRouter;
